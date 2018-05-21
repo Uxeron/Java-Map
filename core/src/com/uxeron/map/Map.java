@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
-import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class Map implements ApplicationListener {
@@ -25,6 +24,9 @@ public class Map implements ApplicationListener {
 
 	private Sprite mapSprite;
 	private float rotationSpeed;
+
+	private float baseViewportWidth = 30f;
+	private float baseViewportHeight = 30f * ((float) WORLD_HEIGHT/WORLD_WIDTH);
 
 	Vector3 tp = new Vector3();
 
@@ -41,7 +43,7 @@ public class Map implements ApplicationListener {
 
 		// Constructs a new OrthographicCamera, using the given viewport width and height
 		// Height is multiplied by aspect ratio.
-		cam = new OrthographicCamera(30, 30 * (h / w));
+		cam = new OrthographicCamera(baseViewportWidth, baseViewportHeight);
 
 		cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
 		cam.update();
@@ -55,7 +57,7 @@ public class Map implements ApplicationListener {
 				float px = tp.x;
 				float py = tp.y;
 				cam.zoom += change * cam.zoom * 0.1f;
-				cam.zoom = MathUtils.clamp(cam.zoom, 2.7f, min(370/cam.viewportWidth, 444/cam.viewportHeight));
+				cam.zoom = MathUtils.clamp(cam.zoom, 2.5f, min(370/cam.viewportWidth, 444/cam.viewportHeight));
 				cam.update();
 
 				cam.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
@@ -111,8 +113,8 @@ public class Map implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		cam.viewportWidth = 30f * (width/(float)WORLD_WIDTH/2);
-		cam.viewportHeight = 30f * (height/(float)WORLD_HEIGHT/2);
+		cam.viewportWidth = baseViewportWidth * (width/(float)WORLD_WIDTH/2);
+		cam.viewportHeight = baseViewportHeight * (height/(float)WORLD_HEIGHT/2);
 		cam.update();
 	}
 
