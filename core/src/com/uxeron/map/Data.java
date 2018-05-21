@@ -41,8 +41,7 @@ public class Data extends JFrame implements ActionListener {
 		textField4 = new JTextField(flag.getAdditionalInfo(),15);
 		add(textField4);
 
-		JButton ok = new JButton();
-		ok.setText("Gerai");
+		JButton ok = new JButton("Gerai");
 		ok.addActionListener(this);
 		add(ok);
 

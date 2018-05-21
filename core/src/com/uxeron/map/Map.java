@@ -29,6 +29,8 @@ public class Map implements ApplicationListener {
 	private Texture flagTexture;
 	private ArrayList<Flag> flags;
 
+	private Filter filter;
+
 	private float baseViewportWidth = 30f;
 	private float baseViewportHeight = 30f * ((float) WORLD_HEIGHT/WORLD_WIDTH);
 
@@ -37,6 +39,8 @@ public class Map implements ApplicationListener {
 	@Override
 	public void create() {
 		flags = new ArrayList<Flag>();
+
+		filter = new Filter();
 
 		flagTexture = new Texture("Flag.png");
 
@@ -109,6 +113,10 @@ public class Map implements ApplicationListener {
 		mapSprite.draw(batch);
 
 		for (Flag flag : flags) {
+			if (flag.getCountry().contains(filter.getCountry()) &&
+				flag.getCode().contains(filter.getCode()) &&
+				flag.getBusinessName().contains(filter.getBusinessName()) &&
+				flag.getAdditionalInfo().contains(filter.getAdditionalInfo()))
 			flag.getSpr().draw(batch);
 		}
 
