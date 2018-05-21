@@ -75,15 +75,27 @@ public class Map implements ApplicationListener {
 				cam.unproject(pos);
 
 				if (button == Input.Buttons.LEFT) {
-					Flag flag = new Flag(new Sprite(flagTexture), pos.x, pos.y);
-					flags.add(flag);
-					new Data(flag);
+					boolean found = false;
+					for(Flag flag: flags) {
+						if (flag.getSpr().getBoundingRectangle().contains(pos.x, pos.y)) {
+							found = true;
+							new Data(flag);
+							break;
+						}
+					}
+
+					if (!found) {
+						Flag flag = new Flag(new Sprite(flagTexture), pos.x, pos.y);
+						flags.add(flag);
+						new Data(flag);
+					}
 					return true;
 				}
 				return false;
 			}
 		});
 	}
+
 
 	@Override
 	public void render() {
@@ -139,56 +151,5 @@ public class Map implements ApplicationListener {
 
 	@Override
 	public void pause() {
-	}
-}
-
-class Flag {
-	private Sprite spr;
-	private String country;
-	private String code;
-	private String businessName;
-	private String additionalInfo;
-
-
-	public Flag(Sprite spr, float posx, float posy) {
-		this.spr = spr;
-		this.spr.setPosition(posx-3.3f, posy-1);
-		this.spr.setSize(10, 10);
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getBusinessName() {
-		return businessName;
-	}
-
-	public void setBusinessName(String businessName) {
-		this.businessName = businessName;
-	}
-
-	public String getAdditionalInfo() {
-		return additionalInfo;
-	}
-
-	public void setAdditionalInfo(String additionalInfo) {
-		this.additionalInfo = additionalInfo;
-	}
-
-	public Sprite getSpr() {
-		return spr;
 	}
 }

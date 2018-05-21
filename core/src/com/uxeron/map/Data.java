@@ -23,22 +23,22 @@ public class Data extends JFrame implements ActionListener {
 
 		add(new JLabel("Šalis"));
 
-		textField1 = new JTextField(15);
+		textField1 = new JTextField(flag.getCountry(), 15);
 		add(textField1);
 
 		add(new JLabel("Kodas"));
 
-		textField2 = new JTextField(15);
+		textField2 = new JTextField(flag.getCode(), 15);
 		add(textField2);
 
 		add(new JLabel("Įmonės pavadinimas"));
 
-		textField3 = new JTextField(15);
+		textField3 = new JTextField(flag.getBusinessName(),15);
 		add(textField3);
 
 		add(new JLabel("Papildoma informacija"));
 
-		textField4 = new JTextField(15);
+		textField4 = new JTextField(flag.getAdditionalInfo(),15);
 		add(textField4);
 
 		JButton ok = new JButton();
