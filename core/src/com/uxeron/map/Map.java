@@ -12,10 +12,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 public class Map implements ApplicationListener {
 
-	static final int WORLD_WIDTH = 100;
-	static final int WORLD_HEIGHT = 100;
+	static final int WORLD_WIDTH = 370;
+	static final int WORLD_HEIGHT = 444;
 
 	private OrthographicCamera cam;
 	private SpriteBatch batch;
@@ -29,7 +32,7 @@ public class Map implements ApplicationListener {
 	public void create() {
 		rotationSpeed = 0.5f;
 
-		mapSprite = new Sprite(new Texture("badlogic.jpg"));
+		mapSprite = new Sprite(new Texture("European_Postcode_Map.png"));
 		mapSprite.setPosition(0, 0);
 		mapSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
 
@@ -52,6 +55,7 @@ public class Map implements ApplicationListener {
 				float px = tp.x;
 				float py = tp.y;
 				cam.zoom += change * cam.zoom * 0.1f;
+				cam.zoom = MathUtils.clamp(cam.zoom, 2.7f, min(370/cam.viewportWidth, 444/cam.viewportHeight));
 				cam.update();
 
 				cam.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
@@ -61,10 +65,10 @@ public class Map implements ApplicationListener {
 			}
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				if (button == Input.Buttons.FORWARD) {
-					cam.zoom += 0.02;
+					//cam.zoom += 0.02;
 				}
 				if (button == Input.Buttons.BACK) {
-					cam.zoom -= 0.02;
+					//cam.zoom -= 0.02;
 				}
 				return true;
 			}
@@ -85,44 +89,30 @@ public class Map implements ApplicationListener {
 	}
 
 	private void handleInput() {
-		if (Gdx.input.isKeyPressed(Input.Buttons.LEFT)) {
-			cam.zoom += 0.02;
+		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+			cam.translate(-1, 0, 0);
 		}
-		if (Gdx.input.isKeyPressed(Input.Buttons.RIGHT)) {
-			cam.zoom -= 0.02;
+		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+			cam.translate(1, 0, 0);
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			cam.translate(-3, 0, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			cam.translate(3, 0, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			cam.translate(0, -3, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			cam.translate(0, 3, 0);
+		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+			cam.translate(0, -1, 0);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			cam.rotate(-rotationSpeed, 0, 0, 1);
+			cam.translate(0, 1, 0);
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-			cam.rotate(rotationSpeed, 0, 0, 1);
-		}
-
-		cam.zoom = MathUtils.clamp(cam.zoom, 0.1f, 100/cam.viewportWidth);
 
 		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
 		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
 
-		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, 100 - effectiveViewportWidth / 2f);
-		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, 100 - effectiveViewportHeight / 2f);
+		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, WORLD_WIDTH - effectiveViewportWidth / 2f);
+		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, WORLD_HEIGHT - effectiveViewportHeight / 2f);
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		cam.viewportWidth = 30f;
-		cam.viewportHeight = 30f * height/width;
+		cam.viewportWidth = 30f * (width/(float)WORLD_WIDTH/2);
+		cam.viewportHeight = 30f * (height/(float)WORLD_HEIGHT/2);
 		cam.update();
 	}
 
