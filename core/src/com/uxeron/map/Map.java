@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 
 public class Map implements ApplicationListener {
 
@@ -21,6 +22,8 @@ public class Map implements ApplicationListener {
 
 	private Sprite mapSprite;
 	private float rotationSpeed;
+
+	Vector3 tp = new Vector3();
 
 	@Override
 	public void create() {
@@ -43,6 +46,19 @@ public class Map implements ApplicationListener {
 		batch = new SpriteBatch();
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean scrolled (int change) {
+				cam.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+				float px = tp.x;
+				float py = tp.y;
+				cam.zoom += change * cam.zoom * 0.1f;
+				cam.update();
+
+				cam.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
+				cam.position.add(px - tp.x, py- tp.y, 0);
+				cam.update();
+				return true;
+			}
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				if (button == Input.Buttons.FORWARD) {
 					cam.zoom += 0.02;
