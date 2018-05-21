@@ -12,6 +12,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.ArrayList;
+import java.util.Vector;
+
 import static java.lang.Math.min;
 
 public class Map implements ApplicationListener {
@@ -23,7 +26,8 @@ public class Map implements ApplicationListener {
 	private SpriteBatch batch;
 
 	private Sprite mapSprite;
-	private float rotationSpeed;
+	private Texture flagTexture;
+	private ArrayList<Flag> flags;
 
 	private float baseViewportWidth = 30f;
 	private float baseViewportHeight = 30f * ((float) WORLD_HEIGHT/WORLD_WIDTH);
@@ -32,7 +36,9 @@ public class Map implements ApplicationListener {
 
 	@Override
 	public void create() {
-		rotationSpeed = 0.5f;
+		flags = new ArrayList<Flag>();
+
+		flagTexture = new Texture("Flag.png");
 
 		mapSprite = new Sprite(new Texture("European_Postcode_Map.png"));
 		mapSprite.setPosition(0, 0);
@@ -41,11 +47,9 @@ public class Map implements ApplicationListener {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
-		// Constructs a new OrthographicCamera, using the given viewport width and height
-		// Height is multiplied by aspect ratio.
 		cam = new OrthographicCamera(baseViewportWidth, baseViewportHeight);
 
-		cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
+		cam.zoom = min(WORLD_WIDTH/cam.viewportWidth, WORLD_HEIGHT/cam.viewportHeight);
 		cam.update();
 
 		batch = new SpriteBatch();
@@ -57,7 +61,7 @@ public class Map implements ApplicationListener {
 				float px = tp.x;
 				float py = tp.y;
 				cam.zoom += change * cam.zoom * 0.1f;
-				cam.zoom = MathUtils.clamp(cam.zoom, 2.5f, min(370/cam.viewportWidth, 444/cam.viewportHeight));
+				cam.zoom = MathUtils.clamp(cam.zoom, 2.5f, min(WORLD_WIDTH/cam.viewportWidth, WORLD_HEIGHT/cam.viewportHeight));
 				cam.update();
 
 				cam.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0 ));
@@ -65,14 +69,18 @@ public class Map implements ApplicationListener {
 				cam.update();
 				return true;
 			}
+
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				if (button == Input.Buttons.FORWARD) {
-					//cam.zoom += 0.02;
+				Vector3 pos = new Vector3(screenX, screenY, 0);
+				cam.unproject(pos);
+
+				if (button == Input.Buttons.LEFT) {
+					Flag flag = new Flag(new Sprite(flagTexture), pos.x, pos.y);
+					flags.add(flag);
+					new Data(flag);
+					return true;
 				}
-				if (button == Input.Buttons.BACK) {
-					//cam.zoom -= 0.02;
-				}
-				return true;
+				return false;
 			}
 		});
 	}
@@ -87,22 +95,23 @@ public class Map implements ApplicationListener {
 
 		batch.begin();
 		mapSprite.draw(batch);
+
+		for (Flag flag : flags) {
+			flag.getSpr().draw(batch);
+		}
+
 		batch.end();
 	}
 
 	private void handleInput() {
-		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.A))
 			cam.translate(-1, 0, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.D))
 			cam.translate(1, 0, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.S))
 			cam.translate(0, -1, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.W))
 			cam.translate(0, 1, 0);
-		}
 
 		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
 		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
@@ -130,5 +139,56 @@ public class Map implements ApplicationListener {
 
 	@Override
 	public void pause() {
+	}
+}
+
+class Flag {
+	private Sprite spr;
+	private String country;
+	private String code;
+	private String businessName;
+	private String additionalInfo;
+
+
+	public Flag(Sprite spr, float posx, float posy) {
+		this.spr = spr;
+		this.spr.setPosition(posx-3.3f, posy-1);
+		this.spr.setSize(10, 10);
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getBusinessName() {
+		return businessName;
+	}
+
+	public void setBusinessName(String businessName) {
+		this.businessName = businessName;
+	}
+
+	public String getAdditionalInfo() {
+		return additionalInfo;
+	}
+
+	public void setAdditionalInfo(String additionalInfo) {
+		this.additionalInfo = additionalInfo;
+	}
+
+	public Sprite getSpr() {
+		return spr;
 	}
 }
