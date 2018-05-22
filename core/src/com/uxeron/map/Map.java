@@ -112,12 +112,18 @@ public class Map implements ApplicationListener {
 		batch.begin();
 		mapSprite.draw(batch);
 
-		for (Flag flag : flags) {
-			if (flag.getCountry().contains(filter.getCountry()) &&
-				flag.getCode().contains(filter.getCode()) &&
-				flag.getBusinessName().contains(filter.getBusinessName()) &&
-				flag.getAdditionalInfo().contains(filter.getAdditionalInfo()))
-			flag.getSpr().draw(batch);
+		Flag flag;
+
+		for (int i = 0; i < flags.size(); i++) {
+			flag = flags.get(i);
+			if (flag.isToBeDeleted()) {
+				flags.remove(i);
+				i--;
+			} else if (flag.getCountry().contains(filter.getCountry()) &&
+					flag.getCode().contains(filter.getCode()) &&
+					flag.getBusinessName().contains(filter.getBusinessName()) &&
+					flag.getAdditionalInfo().contains(filter.getAdditionalInfo()))
+				flag.getSpr().draw(batch);
 		}
 
 		batch.end();

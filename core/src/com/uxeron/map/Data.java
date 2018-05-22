@@ -45,6 +45,10 @@ public class Data extends JFrame implements ActionListener {
 		ok.addActionListener(this);
 		add(ok);
 
+		JButton del = new JButton("Ištrinti");
+		del.addActionListener(this);
+		add(del);
+
 		setAlwaysOnTop(true);
 		setUndecorated(true);
 		setSize(200, 230);
@@ -52,10 +56,14 @@ public class Data extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		flag.setCountry(textField1.getText());
-		flag.setCode(textField2.getText());
-		flag.setBusinessName(textField3.getText());
-		flag.setAdditionalInfo(textField4.getText());
+		if (e.getActionCommand() == "Gerai") {
+			flag.setCountry(textField1.getText());
+			flag.setCode(textField2.getText());
+			flag.setBusinessName(textField3.getText());
+			flag.setAdditionalInfo(textField4.getText());
+		} else {
+			flag.setToBeDeleted(true);
+		}
 		dispose();
 	}
 

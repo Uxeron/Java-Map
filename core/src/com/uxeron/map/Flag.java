@@ -8,6 +8,7 @@ class Flag {
 	private String code = "";
 	private String businessName = "";
 	private String additionalInfo = "";
+	private boolean toBeDeleted = false;
 
 
 	public Flag(Sprite spr, float posx, float posy) {
@@ -50,5 +51,13 @@ class Flag {
 
 	public Sprite getSpr() {
 		return spr;
+	}
+
+	public boolean isToBeDeleted() {
+		return toBeDeleted;
+	}
+
+	public void setToBeDeleted(boolean toBeDeleted) {
+		this.toBeDeleted = toBeDeleted;
 	}
 }
